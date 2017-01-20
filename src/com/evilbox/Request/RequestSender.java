@@ -28,6 +28,7 @@ public class RequestSender {
     private boolean forceReAnalysis;
     private VirustotalPublicV2 virustotalPublicV2;
     private String zipPassword;
+    private String prova_branching;
 
 
     /**

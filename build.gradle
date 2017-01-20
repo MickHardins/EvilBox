@@ -1,0 +1,41 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/com/evilbox/']
+        }        
+    }
+}
+
+version = '1.0'
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.evilbox.ApplicationMain'
+    }
+	destinationDir = file('./build/application')
+    baseName = 'evilBox'
+    from { 
+		configurations.compile.collect { 
+			it.isDirectory() ? it : zipTree(it) 
+		}
+	}
+    with jar
+	
+	doLast {
+		println()
+		println('Distributable jar created in ' + destinationDir)
+	}
+	
+}
+
+dependencies {
+	compile fileTree(dir: 'lib', include: ['*.jar'])	
+	compile fileTree(dir: 'lib/commons-cli-1.3.1', include: ['*.jar'])	
+	runtime fileTree(dir: 'lib', include: ['*.jar'])
+	runtime fileTree(dir: 'lib/commons-cli-1.3.1', include: ['*.jar'])
+	
+}
+
+build.finalizedBy(fatJar)

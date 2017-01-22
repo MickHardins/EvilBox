@@ -27,7 +27,9 @@ public class ApplicationMain {
 
     private static void reclassifyAllEntriesTask() {
         System.out.println("Reclassifying all entries in database...");
-        System.out.println("Entries correctly reclassified - Database has been updated");
+        DatabaseHelper.reClassifyAllEntryes();
+        System.out.println("Entries correctly reclassified - Database has been updated\n");
+        DatabaseHelper.printDatasetStats();
 
     }
 
@@ -130,6 +132,7 @@ public class ApplicationMain {
         Options options = ArgumentOptions.getApplicationOptions();
         boolean forceReinsert = false;
         String zipPassword = null;
+
 
         try {
             // parse the command line arguments

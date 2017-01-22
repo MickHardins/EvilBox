@@ -37,6 +37,17 @@ public class DatabaseHelper {
     private static final String UPDATE_RESPONSE = "UPDATE scan_result SET  md5_col = '{value}'," +
             " json_response = '{value_2}', semantic_label = '{value_3}', behaviour = '{behaviour}'," +
             " infection_vector = '{vector}', goal_primary = '{goal_primary}',goal_secondary = '{goal_secondary}' WHERE md5_col = '{value}'";
+    private static final String COUNT_UNDEF_BEHAVIOUR = "SELECT count(*) FROM scan_result where behaviour = 'undefined'";
+    private static final String COUNT_TROJAN = "SELECT count(*) FROM scan_result WHERE behaviour = 'trojan'";
+    private static final String COUNT_WORM = "SELECT count(*) FROM scan_result WHERE behaviour = 'worm'";
+    private static final String COUNT_VIRUS= "SELECT count(*) FROM scan_result WHERE behaviour = 'virus'";
+    private static final String COUNT_BACKDOOR = "SELECT count(*) FROM scan_result WHERE behaviour = 'backdoor'";
+    private static final String COUNT_ROOTKIT= "SELECT count(*) FROM scan_result WHERE behaviour = 'rootkit'";
+    private static final String COUNT_CLEAN_SAMPLE = "SELECT count(*) FROM scan_result WHERE behaviour = 'not-a-virus'";
+    private static final String COUNT_UNDEF_INF_VECT = "SELECT count(*) FROM scan_result WHERE infection_vector  = 'undefined'";
+    private static final String COUNT_UNDEF_GOAL_PRIMARY = "SELECT count(*) FROM scan_result WHERE goal_primary  = 'undefined'";
+    private static final String COUNT_UNDEF_GOALS_SECONDARY = "SELECT count(*) FROM scan_result WHERE goal_secondary  = 'undefined'";
+
 
 
     /**
@@ -141,7 +152,7 @@ public class DatabaseHelper {
      * @param fileScanReport    report obtained from virustotal.com for the given sample
      * @param label             label obtained from the analysis phase
      */
-    public static void updateScanResponse(String MD5, FileScanReport fileScanReport,String label){
+    public static void  updateScanResponse(String MD5, FileScanReport fileScanReport,String label){
         Gson gson = new Gson();
         String jsonReport = gson.toJson(fileScanReport, FileScanReport.class);
         ArrayList<String> tokensList = new ArrayList<>(Arrays.asList(label.split("[^0-9a-zA-Z-]")));
@@ -371,9 +382,88 @@ public class DatabaseHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Prints statistics about samples in dataset
+     * Stats are: total samples, behaviours percentages etc
+     */
+    public static void printDatasetStats() {
+        // please god forgive me for what i did here, time was gone, night was scary, i felt fear
+
+        double totalRows , trojanCount , rootkitCount, backdoorCount, wormCount, virusCount;
+        double cleanCount, undefInfVector, undefPrimaryGoal, undefSecondaryGoal, undefBehaviour;
+
+        try {
+            Connection connection = getDatabaseConnection();
+            Statement statement = connection.createStatement();
+
+            ResultSet result = statement.executeQuery(COUNT_UNDEF_BEHAVIOUR);
+            undefBehaviour = result.getInt(1);
+
+            result = statement.executeQuery(COUNT_TROJAN);
+            trojanCount =  result.getInt(1);
+
+            result = statement.executeQuery(COUNT_BACKDOOR);
+            backdoorCount = result.getInt(1);
+
+            result = statement.executeQuery(COUNT_ROOTKIT);
+            rootkitCount = result.getInt(1);
+
+            result = statement.executeQuery(COUNT_VIRUS);
+            virusCount = result.getInt(1);
+
+            result = statement.executeQuery(COUNT_WORM);
+            wormCount = result.getInt(1);
+
+            result = statement.executeQuery(COUNT_CLEAN_SAMPLE);
+            cleanCount = result.getInt(1);
+
+            result = statement.executeQuery(COUNT_UNDEF_INF_VECT);
+            undefInfVector = result.getInt(1);
+
+            result = statement.executeQuery(COUNT_UNDEF_GOAL_PRIMARY);
+            undefPrimaryGoal = result.getInt(1);
+
+            result = statement.executeQuery(COUNT_UNDEF_GOALS_SECONDARY);
+            undefSecondaryGoal = result.getInt(1);
+
+            totalRows = trojanCount + backdoorCount + wormCount + virusCount+rootkitCount+cleanCount+undefBehaviour;
+
+            double maliciousSamples = totalRows - cleanCount;
+            double trojPercentage = (trojanCount / maliciousSamples) * 100;
+            double backPercentage = (backdoorCount / maliciousSamples) * 100;
+            double rootPercentage = (rootkitCount / maliciousSamples) * 100;
+            double wormPercentage = (wormCount / maliciousSamples) * 100;
+            double virusPercentage = (rootkitCount / maliciousSamples) * 100;
+            double detectedInfVectPer =  100 - (((undefInfVector - cleanCount) / maliciousSamples) * 100);
+            double detectedPrimGoalPer = 100 - (((undefPrimaryGoal - cleanCount) / maliciousSamples) * 100);
+            double detectedSecGoalPer = 100 - (((undefSecondaryGoal - cleanCount) / maliciousSamples) * 100);
+
+            System.out.println("##############################  Dataset Statistics ##############################");
+            System.out.printf("\n\t%-50s %15.0f%n","Total samples:",  totalRows);
+            System.out.format("\t%-50s %15.0f%n","Clean samples:", cleanCount);
+            System.out.format("\t%-50s %15.0f%n","Unclassified samples:", undefBehaviour);
+            System.out.format("\n\t%-50s %15.0f%n%n","Malicious samples:", maliciousSamples);
+            System.out.format("\t%-50s %15.2f%s (%.0f)%n","Trojan:", trojPercentage, "%", trojanCount);
+            System.out.format("\t%-50s %15.2f%s (%.0f)%n","Backdoor:", backPercentage, "%", backdoorCount);
+            System.out.format("\t%-50s %15.2f%s (%.0f)%n","Rootkit:", rootPercentage, "%", rootkitCount); 
+            System.out.format("\t%-50s %15.2f%s (%.0f)%n","Worm:", wormPercentage, "%", wormCount);
+            System.out.format("\t%-50s %15.2f%s (%.0f)%n","Virus:", virusPercentage, "%", virusCount);
+            System.out.format("\n\t%-50s %15.2f%s%n", "Classified Infection Vector:", detectedInfVectPer, "%");
+            System.out.format("\t%-50s %15.2f%s%n","Classified Primary Goals:", detectedPrimGoalPer, "%");
+            System.out.format("\t%-50s %15.2f%s%n","Classified Secondary Goals:" ,detectedSecGoalPer, "%");
+            System.out.println("\n#################################################################################");
+
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
+
 
     /**
      * Saves a FileScanReport Object to a .json file in the application's working directory.

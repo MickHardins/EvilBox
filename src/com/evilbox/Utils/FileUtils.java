@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.StringJoiner;
 
 /**
  * Contains useful methods to interact with filesystem and files.

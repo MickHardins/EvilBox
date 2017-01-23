@@ -127,7 +127,7 @@ public class RequestSender {
                 // send and do analysis
                 // first we try with md5, if we are lucky virus total already has the file
                 FileScanReport fileScanReport = postRequestMD5(md5, fileToSend.getName());
-                if ( fileScanReport == null || fileScanReport.getResponseCode() == 2) {
+                if (fileScanReport == null || fileScanReport.getResponseCode() == 2) {
                     //scan is queued we try later
                     continue;
                 }
@@ -144,7 +144,7 @@ public class RequestSender {
                     System.out.println("Waiting to stay within HTTP request limit");
                     Thread.sleep(HTTP_TIME_DELAY);
                 }
-                catch (Exception e ) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -242,7 +242,7 @@ public class RequestSender {
                 //send and do analysis
                 // first we try with md5, if we are lucky virus total already has the file
                 FileScanReport fileScanReport = postRequestMD5(md5, fileToSend.getName());
-                if ( fileScanReport == null || fileScanReport.getResponseCode() == 2) {
+                if (fileScanReport == null || fileScanReport.getResponseCode() == 2) {
                     //scan is queued we try later
                     continue;
                 }

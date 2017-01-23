@@ -603,6 +603,10 @@ public class Analyzer {
      * @return label assigned to sample associated to fileScanReport supplied
      */
     public String responseAnalyzerV2(FileScanReport fileScanReport ){ //todo check if filescanreport is not null
+        if (fileScanReport == null) {
+            return "ERROR: request report again";
+        }
+
         if(fileScanReport.getPositives() == 0){
             return "not-a-virus";
         }

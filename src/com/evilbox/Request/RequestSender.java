@@ -27,6 +27,7 @@ public class RequestSender {
     private HashMap<String,String> notReadyScans; // key = md5, value = filename
     private boolean forceReAnalysis;
     private VirustotalPublicV2 virustotalPublicV2;
+    private final String WAITING_MESSAGE = "Waiting to stay within HTTP request limit\n";
     private String zipPassword;
 
 
@@ -141,7 +142,7 @@ public class RequestSender {
                 DatabaseHelper.insertScanResponse(md5,fileScanReport,sampleLabel,fileToSend.getName());
 
                 try {
-                    System.out.println("Waiting to stay within HTTP request limit");
+                    System.out.println(WAITING_MESSAGE);
                     Thread.sleep(HTTP_TIME_DELAY);
                 }
                 catch (Exception e) {
@@ -164,7 +165,7 @@ public class RequestSender {
                 DatabaseHelper.updateScanResponse(md5,fileScanReport,sampleLabel);
 
                 try {
-                    System.out.println("Waiting to stay within HTTP request limit");
+                    System.out.println(WAITING_MESSAGE);
                     Thread.sleep(HTTP_TIME_DELAY);
                 }
                 catch (Exception e ) {
@@ -256,7 +257,7 @@ public class RequestSender {
                 DatabaseHelper.insertScanResponse(md5,fileScanReport,sampleLabel,fileToSend.getName());
 
                 try {
-                    System.out.println("Waiting to stay within HTTP request limit");
+                    System.out.println(WAITING_MESSAGE);
                     Thread.sleep(HTTP_TIME_DELAY);
                 }
                 catch (Exception e ) {
@@ -279,7 +280,7 @@ public class RequestSender {
                 DatabaseHelper.updateScanResponse(md5,fileScanReport,sampleLabel);
 
                 try {
-                    System.out.println("Waiting to stay within HTTP request limit");
+                    System.out.println(WAITING_MESSAGE);
                     Thread.sleep(HTTP_TIME_DELAY);
                 }
                 catch (Exception e ) {
@@ -411,7 +412,7 @@ public class RequestSender {
                 DatabaseHelper.insertScanResponse(md5, fileScanReport, sampleLabel,filename);
 
                 try {
-                    System.out.println("Waiting to stay within HTTP request limit");
+                    System.out.println(WAITING_MESSAGE);
                     Thread.sleep(HTTP_TIME_DELAY);
                 }
                 catch (Exception e ) {
@@ -434,7 +435,7 @@ public class RequestSender {
                 DatabaseHelper.updateScanResponse(md5, fileScanReport, sampleLabel);
 
                 try {
-
+                    System.out.println(WAITING_MESSAGE);
                     Thread.sleep(HTTP_TIME_DELAY);
                 }
                 catch (Exception e ) {
@@ -481,7 +482,7 @@ public class RequestSender {
                 DatabaseHelper.insertScanResponse(md5, fileScanReport, sampleLabel,filename);
 
                 try {
-                    System.out.println("Waiting to stay within HTTP request limit");
+                    System.out.println(WAITING_MESSAGE);
                     Thread.sleep(HTTP_TIME_DELAY);
                 }
                 catch (Exception e ) {
@@ -504,7 +505,7 @@ public class RequestSender {
                 DatabaseHelper.updateScanResponse(md5, fileScanReport, sampleLabel);
 
                 try {
-
+                    System.out.println(WAITING_MESSAGE);
                     Thread.sleep(HTTP_TIME_DELAY);
                 }
                 catch (Exception e ) {

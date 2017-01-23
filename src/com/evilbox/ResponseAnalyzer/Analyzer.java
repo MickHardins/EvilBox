@@ -277,7 +277,6 @@ public class Analyzer {
         infectionVectorRank.put("app-store", 0);
         infectionVectorRank.put("dropped", 0);
         infectionVectorRank.put("drive-by-download", 0);
-        
 
     }
 

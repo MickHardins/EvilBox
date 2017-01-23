@@ -269,14 +269,15 @@ public class Analyzer {
     private void createRankingInfectionVectors(){
         //crea la mappa dei vettori di infezione e setta a zero i punteggi
         infectionVectorRank = new HashMap<>();
-        infectionVectorRank.put("mail",0);
-        infectionVectorRank.put("drive",0);
-        infectionVectorRank.put("internet",0);
-        infectionVectorRank.put("p2p",0);
-        infectionVectorRank.put("im",0);
-        infectionVectorRank.put("app-store",0);
-        infectionVectorRank.put("dropped",0);
-        infectionVectorRank.put("drive-by-download",0);
+        infectionVectorRank.put("mail", 0);
+        infectionVectorRank.put("drive", 0);
+        infectionVectorRank.put("internet", 0);
+        infectionVectorRank.put("p2p", 0);
+        infectionVectorRank.put("im", 0);
+        infectionVectorRank.put("app-store", 0);
+        infectionVectorRank.put("dropped", 0);
+        infectionVectorRank.put("drive-by-download", 0);
+        
 
     }
 
@@ -315,7 +316,7 @@ public class Analyzer {
         //crea un'associazione tra behaviour e vettori di infezione
         behaviourVectorLink = new HashMap<>();
         behaviourVectorLink.put("email-worm","mail");
-        behaviourVectorLink.put("irc-worm","irc");
+        behaviourVectorLink.put("irc-worm","im");
         behaviourVectorLink.put("im-worm","im");
         behaviourVectorLink.put("p2p-worm","p2p");
         behaviourVectorLink.put("net-worm","internet");

@@ -44,9 +44,9 @@ public class DatabaseHelper {
     private static final String COUNT_BACKDOOR = "SELECT count(*) FROM scan_result WHERE behaviour = 'backdoor'";
     private static final String COUNT_ROOTKIT= "SELECT count(*) FROM scan_result WHERE behaviour = 'rootkit'";
     private static final String COUNT_CLEAN_SAMPLE = "SELECT count(*) FROM scan_result WHERE behaviour = 'not-a-virus'";
-    private static final String COUNT_UNDEF_INF_VECT = "SELECT count(*) FROM scan_result WHERE infection_vector  = 'undefined'";
-    private static final String COUNT_UNDEF_GOAL_PRIMARY = "SELECT count(*) FROM scan_result WHERE goal_primary  = 'undefined'";
-    private static final String COUNT_UNDEF_GOALS_SECONDARY = "SELECT count(*) FROM scan_result WHERE goal_secondary  = 'undefined'";
+    private static final String COUNT_CLASSIFIED_INF_VECT = "SELECT count(*) FROM scan_result WHERE infection_vector  != 'undefined'";
+    private static final String COUNT_CLASSIFIED_GOAL_PRIMARY = "SELECT count(*) FROM scan_result WHERE goal_primary  != 'undefined'";
+    private static final String COUNT_CLASSIFIED_GOALS_SECONDARY = "SELECT count(*) FROM scan_result WHERE goal_secondary  != 'undefined'";
 
 
 
@@ -392,7 +392,7 @@ public class DatabaseHelper {
         // please god forgive me for what i did here, time was gone, night was scary, i felt fear
 
         double totalRows , trojanCount , rootkitCount, backdoorCount, wormCount, virusCount;
-        double cleanCount, undefInfVector, undefPrimaryGoal, undefSecondaryGoal, undefBehaviour;
+        double cleanCount, classInfectVector, classPrimaryGoal, classSecondaryGoal, undefBehaviour;
 
         try {
             Connection connection = getDatabaseConnection();
@@ -419,26 +419,26 @@ public class DatabaseHelper {
             result = statement.executeQuery(COUNT_CLEAN_SAMPLE);
             cleanCount = result.getInt(1);
 
-            result = statement.executeQuery(COUNT_UNDEF_INF_VECT);
-            undefInfVector = result.getInt(1);
+            result = statement.executeQuery(COUNT_CLASSIFIED_INF_VECT);
+            classInfectVector = result.getInt(1);
 
-            result = statement.executeQuery(COUNT_UNDEF_GOAL_PRIMARY);
-            undefPrimaryGoal = result.getInt(1);
+            result = statement.executeQuery(COUNT_CLASSIFIED_GOAL_PRIMARY);
+            classPrimaryGoal = result.getInt(1);
 
-            result = statement.executeQuery(COUNT_UNDEF_GOALS_SECONDARY);
-            undefSecondaryGoal = result.getInt(1);
+            result = statement.executeQuery(COUNT_CLASSIFIED_GOALS_SECONDARY);
+            classSecondaryGoal = result.getInt(1);
 
             totalRows = trojanCount + backdoorCount + wormCount + virusCount+rootkitCount+cleanCount+undefBehaviour;
 
-            double maliciousSamples = totalRows - cleanCount;
+            double maliciousSamples = totalRows - cleanCount - undefBehaviour;
             double trojPercentage = (trojanCount / maliciousSamples) * 100;
             double backPercentage = (backdoorCount / maliciousSamples) * 100;
             double rootPercentage = (rootkitCount / maliciousSamples) * 100;
             double wormPercentage = (wormCount / maliciousSamples) * 100;
-            double virusPercentage = (rootkitCount / maliciousSamples) * 100;
-            double detectedInfVectPer =  100 - (((undefInfVector - cleanCount) / maliciousSamples) * 100);
-            double detectedPrimGoalPer = 100 - (((undefPrimaryGoal - cleanCount) / maliciousSamples) * 100);
-            double detectedSecGoalPer = 100 - (((undefSecondaryGoal - cleanCount) / maliciousSamples) * 100);
+            double virusPercentage = (virusCount / maliciousSamples) * 100;
+            double detectedInfVectPer = ((classInfectVector - cleanCount) / maliciousSamples) * 100;
+            double detectedPrimGoalPer = ((classPrimaryGoal - cleanCount) / maliciousSamples) * 100;
+            double detectedSecGoalPer = ((classSecondaryGoal - cleanCount) / maliciousSamples) * 100;
 
             System.out.println("##############################  Dataset Statistics ##############################");
             System.out.printf("\n\t%-50s %15.0f%n","Total samples:",  totalRows);
